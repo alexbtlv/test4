@@ -17,6 +17,7 @@ final class MainViewController: UIViewController {
 
     // MARK: Outlets
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var searchBar: UISearchBar!
     
     private let viewModel = MainViewModel()
     private let disposeBag = DisposeBag()
@@ -48,6 +49,10 @@ final class MainViewController: UIViewController {
                 SVProgressHUD.dismiss()
             }
         }).disposed(by: disposeBag)
+        
+        searchBar.rx.text.subscribe(onNext: { [weak self] (text) in
+            self?.viewModel.searchQuery.accept(text)
+        }).disposed(by: disposeBag)
     }
     
     private func dataSource() -> RxTableViewSectionedReloadDataSource<MainSectionModel> {
@@ -61,4 +66,3 @@ final class MainViewController: UIViewController {
         })
     }
 }
-

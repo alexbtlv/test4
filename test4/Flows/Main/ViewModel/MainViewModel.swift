@@ -8,11 +8,13 @@
 
 import Moya
 import RxCocoa
+import RxSwift
 
 final class MainViewModel {
     
     // MARK: Private properties
     private let provider: MoyaProvider<APIProvider>
+    private let disposeBag = DisposeBag()
     private var articles = [Article]() {
         didSet {
             setupSections()
@@ -23,9 +25,16 @@ final class MainViewModel {
     let currentPage = BehaviorRelay(value: 1)
     let isLoading: BehaviorRelay<Bool?> = BehaviorRelay(value: nil)
     let sections: BehaviorRelay<[MainSectionModel]> = BehaviorRelay(value: [])
+    let searchQuery: BehaviorRelay<String?> = BehaviorRelay(value: nil)
     
     init() {
         self.provider = MoyaProvider<APIProvider>()
+        
+        searchQuery.asDriver().debounce(.seconds(1)).drive(onNext: { [weak self] (searchText) in
+            guard let searchText = searchText, !searchText.isEmpty else { return }
+            self?.performSearchQuery()
+        }).disposed(by: disposeBag)
+        
         getNews()
     }
     
@@ -42,6 +51,10 @@ final class MainViewModel {
                 print(error)
             }
         }
+    }
+    
+    private func performSearchQuery() {
+        print(searchQuery.value)
     }
     
     private func setupSections() {
