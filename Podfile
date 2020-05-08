@@ -5,6 +5,12 @@ target 'test4' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for test4
+  # Reactive
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxDataSources'
 
+  # UI
+  pod 'SVProgressHUD'
+  
 end
