@@ -9,6 +9,9 @@ target 'test4' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxDataSources'
+  
+  # Networking
+  pod 'Moya/RxSwift'
 
   # UI
   pod 'SVProgressHUD'
