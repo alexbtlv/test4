@@ -17,4 +17,5 @@ enum ParameterKey {
     static let country = "country"
     static let apiKey = "apiKey"
     static let pageSize = "pageSize"
+    static let queryInTitle = "qInTitle"
 }

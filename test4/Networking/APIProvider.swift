@@ -10,6 +10,7 @@ import Moya
 
 enum APIProvider {
     case getNews(page: Int)
+    case searchNews(query: String, page: Int)
 }
 
 extension APIProvider: TargetType {
@@ -21,12 +22,14 @@ extension APIProvider: TargetType {
         switch self {
         case .getNews:
             return "v2/top-headlines"
+        case .searchNews:
+            return "v2/everything"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .getNews:
+        case .getNews, .searchNews:
             return .get
         }
     }
@@ -42,6 +45,12 @@ extension APIProvider: TargetType {
                     ParameterKey.country    : "us",
                     ParameterKey.pageSize   : 20,
                     ParameterKey.apiKey     : Constants.apiKey]
+        case .searchNews(let query, let page):
+            return [ParameterKey.page       : page,
+                    ParameterKey.queryInTitle: query,
+                    ParameterKey.pageSize   : 20,
+                    ParameterKey.apiKey     : Constants.apiKey
+            ]
         }
     }
     

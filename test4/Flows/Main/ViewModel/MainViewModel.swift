@@ -54,7 +54,19 @@ final class MainViewModel {
     }
     
     private func performSearchQuery() {
-        print(searchQuery.value)
+        guard let query = searchQuery.value else { return }
+        self.isLoading.accept(true)
+        provider.request(.searchNews(query: query, page: currentPage.value)) { [weak self] (result) in
+            self?.isLoading.accept(false)
+            switch result {
+            case .success(let response):
+                if let news = try? JSONDecoder().decode(NewsResponseModel.self, from: response.data) {
+                    self?.articles = news.articles
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     private func setupSections() {
