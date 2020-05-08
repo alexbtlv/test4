@@ -13,11 +13,16 @@ final class MainViewModel {
     
     // MARK: Private properties
     private let provider: MoyaProvider<APIProvider>
+    private var articles = [Article]() {
+        didSet {
+            setupSections()
+        }
+    }
     
     // MARK: Public properties
     let currentPage = BehaviorRelay(value: 1)
     let isLoading: BehaviorRelay<Bool?> = BehaviorRelay(value: nil)
-    let articles: BehaviorRelay<[Article]> = BehaviorRelay(value: [])
+    let sections: BehaviorRelay<[MainSectionModel]> = BehaviorRelay(value: [])
     
     init() {
         self.provider = MoyaProvider<APIProvider>()
@@ -31,11 +36,16 @@ final class MainViewModel {
             switch result {
             case .success(let response):
                 if let news = try? JSONDecoder().decode(NewsResponseModel.self, from: response.data) {
-                    self?.articles.accept(news.articles)
+                    self?.articles = news.articles
                 }
             case .failure(let error):
                 print(error)
             }
         }
+    }
+    
+    private func setupSections() {
+        let items = articles.map { MainSectionItem.article(cellViewModel: ArticleCellViewModel(article: $0)) }
+        sections.accept([.main(items: items)])
     }
 }
